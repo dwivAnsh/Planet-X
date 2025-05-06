@@ -4,10 +4,35 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Unkempt:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <canvas id="canvas"></canvas>
+  <div class="w-full h-screen overflow-hidden relative">
+    <canvas id="canvas" class="absolute top-0 left-0 w-full h-full z-[1]"></canvas>
+    <div class="h-screen w-full z-[10] text-white font-['Montserrat']">
+      <nav class="w-[96%] flex justify-between items-center absolute left-[2%] top-[1%]">
+        <h3 class="text-2xl">Planets</h3>
+        <div class="flex gap-6">
+          <a class="text-sm" href="#">Home</a>
+          <a class="text-sm" href="#">About</a> 
+          <a class="text-sm" href="#">Contact</a>
+        </div>
+      </nav>
+      <div class="absolute top-[10%] left-1/2 -translate-x-1/2 text-center">
+        <div class="w-full h-[9em] overflow-hidden">
+          <h1 class="h-full text-9xl font-bold font-['Unkempt']">EARTH</h1>
+          <h1 class="h-full text-9xl font-bold font-['Unkempt']">SCILLA</h1>
+          <h1 class="h-full text-9xl font-bold font-['Unkempt']">VOLCANIC</h1>
+          <h1 class="h-full text-9xl font-bold font-['Unkempt']">VENUS</h1>
+        </div>
+        <p class="text-sm absolute left-1/2 -translate-x-1/2 bottom-0 whitespace-nowrap font-['Montserrat']">The third planet from the sun</p>
+        <div class="w-100 absolute left-1/2 -translate-x-1/2 -bottom-[10px] h-px bg-gradient-to-r from-transparent via-white to-transparent mt-6"></div>
+      </div>
+    </div>
+  </div>
   <script type="module" src="main.js"></script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import gsap from 'gsap';
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader';
 // Create scene, camera and renderer
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(25, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -15,16 +16,40 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 
+// HDRI Environment
+const rgbeLoader = new RGBELoader();
+rgbeLoader.load('https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/4k/docklands_01_4k.hdr', function(texture) {
+    texture.mapping = THREE.EquirectangularReflectionMapping; 
+    scene.environment = texture;
+});
+
 const radius = 1.3; // radius of the planets
 const segments = 64; // number of segments for the planets smoothness 
 const orbitRadius = 4.6;
-const colors = [0x00ff00, 0x0000ff, 0xff00ff, 0xffff00];
+const textures = ['./csilla/color.png','./earth/map.jpg','./venus/map.jpg','./volcanic/color.png']
 const spheres = new THREE.Group();
+
+
+const starTexture = new THREE.TextureLoader().load('./stars.jpg');
+starTexture.colorSpace = THREE.SRGBColorSpace;
+const starGeometry = new THREE.SphereGeometry(50, 64, 64);
+const starMaterial = new THREE.MeshStandardMaterial({
+    map: starTexture,
+    side: THREE.BackSide // Render the inside of the sphere
+});
+
+const starfield = new THREE.Mesh(starGeometry, starMaterial);
+scene.add(starfield);
 
 for(let i = 0; i < 4; i++){
   const geometry = new THREE.SphereGeometry(radius, segments, segments);
-  const material = new THREE.MeshBasicMaterial({ color: colors[i] } );
-  const sphere = new THREE.Mesh(geometry, material);
+  const material = new THREE.MeshStandardMaterial({ map: textures[i] } );
+  const sphere = new THREE.Mesh(geometry, material);   
+
+  const texture = new THREE.TextureLoader().load(textures[i]);
+  material.map = texture;
+  material.needsUpdate = true;
+  texture.colorSpace = THREE.SRGBColorSpace;
 
   const angle = (i/4) * (Math.PI * 2);
   sphere.position.x = orbitRadius * Math.cos(angle); // 3 is orbit radius
@@ -40,13 +65,46 @@ scene.add(spheres);
 // Position camera
 camera.position.z = 9;
 
-// setInterval(() => {
-//   gsap.to(spheres.rotation, {
-//     y: `+=${Math.PI / 2}`,
-//     ease: "expo.easeInOut",
-//     duration: 2
-//   });
-// }, 2500);
+
+// 2 seconds delay for finding the direction of the scroll
+let lastScrollTime = 0;
+let scrollCount = 0;
+const scrollThrottleDelay = 2000; // 2 seconds in milliseconds
+
+window.addEventListener('wheel', (e) => {
+  const currentTime = Date.now();
+  
+  if (currentTime - lastScrollTime >= scrollThrottleDelay) {
+    lastScrollTime = currentTime;
+
+    const direction = e.deltaY > 0 ? "down" : "up";
+    
+
+    scrollCount = (scrollCount + 1) % 4;
+
+    const headings = document.querySelectorAll('h1');
+    gsap.to(headings, {
+      duration: 1,
+      y: `-=${100}%`,
+      ease: "power2.inOut"
+    });
+
+    gsap.to(spheres.rotation, {
+      duration: 1,
+      y: direction === "down" ? spheres.rotation.y - Math.PI/2 : spheres.rotation.y + Math.PI/2,
+      ease: "power2.inOut"
+    });
+
+    if(scrollCount === 0){
+      gsap.to(headings, {
+        duration: 1,
+        y: `0`,
+        ease: "power2.inOut"
+      });
+    }
+  }
+});
+
 
 // Handle window resize
 window.addEventListener('resize', () => {
