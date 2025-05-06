@@ -81,7 +81,7 @@ window.addEventListener('wheel', (e) => {
     
 
     scrollCount = (scrollCount + 1) % 4;
-
+    console.log("Test commit for green box")
     const headings = document.querySelectorAll('h1');
     gsap.to(headings, {
       duration: 1,
