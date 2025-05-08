@@ -41,6 +41,8 @@ const starMaterial = new THREE.MeshStandardMaterial({
 const starfield = new THREE.Mesh(starGeometry, starMaterial);
 scene.add(starfield);
 
+const sphereMesh = [];
+
 for(let i = 0; i < 4; i++){
   const geometry = new THREE.SphereGeometry(radius, segments, segments);
   const material = new THREE.MeshStandardMaterial({ map: textures[i] } );
@@ -55,6 +57,8 @@ for(let i = 0; i < 4; i++){
   sphere.position.x = orbitRadius * Math.cos(angle); 
   sphere.position.z = orbitRadius * Math.sin(angle); 
   
+  sphereMesh.push(sphere);
+
   spheres.rotation.x = 0.1;
   spheres.position.y = -0.9;
   spheres.add(sphere);
@@ -112,9 +116,14 @@ window.addEventListener('resize', () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
+const clock = new THREE.Clock();
+
 // Animation loop
 function animate() {
   requestAnimationFrame(animate);
+  for(let i = 0; i < sphereMesh.length; i++){
+    sphereMesh[i].rotation.y += clock.getElapsedTime() * 0.0001;
+  }
   renderer.render(scene, camera);
 }
 animate();
