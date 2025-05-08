@@ -52,7 +52,7 @@ for(let i = 0; i < 4; i++){
   texture.colorSpace = THREE.SRGBColorSpace;
 
   const angle = (i/4) * (Math.PI * 2);
-  sphere.position.x = orbitRadius * Math.cos(angle); // 3 is orbit radius
+  sphere.position.x = orbitRadius * Math.cos(angle); 
   sphere.position.z = orbitRadius * Math.sin(angle); 
   
   spheres.rotation.x = 0.1;
@@ -81,7 +81,6 @@ window.addEventListener('wheel', (e) => {
     
 
     scrollCount = (scrollCount + 1) % 4;
-    console.log("Test commit for green box")
     const headings = document.querySelectorAll('h1');
     gsap.to(headings, {
       duration: 1,
